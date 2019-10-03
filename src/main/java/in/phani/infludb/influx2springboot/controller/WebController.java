@@ -24,7 +24,7 @@ public class WebController {
     }
 
     @GetMapping("/findall")
-    public List<FluxRecord> findall(){
+    public List<List<FluxRecord>> findall(){
         return influxService.findAll();
     }
 }

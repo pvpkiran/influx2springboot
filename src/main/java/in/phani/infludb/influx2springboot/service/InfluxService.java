@@ -1,12 +1,12 @@
 package in.phani.infludb.influx2springboot.service;
 
+import com.google.common.collect.Lists;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.QueryApi;
 import com.influxdb.client.WriteApi;
 import com.influxdb.client.write.Point;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
-import in.phani.infludb.influx2springboot.config.InfluxDbConfig;
 import in.phani.infludb.influx2springboot.utils.RandomPointsGenerator;
 import org.springframework.stereotype.Service;
 
@@ -16,36 +16,34 @@ import java.util.List;
 public class InfluxService {
 
     private final InfluxDBClient influxDBClient;
-    private final InfluxDbConfig influxDbConfig;
     private final RandomPointsGenerator randomPointsGenerator;
 
     public InfluxService(InfluxDBClient influxDBClient,
-                         InfluxDbConfig influxDbConfig,
                          RandomPointsGenerator randomPointsGenerator) {
         this.influxDBClient = influxDBClient;
-        this.influxDbConfig = influxDbConfig;
         this.randomPointsGenerator = randomPointsGenerator;
     }
     public void writeDataToInflux(){
         try (WriteApi writeApi = influxDBClient.getWriteApi()) {
             List<Point> points = randomPointsGenerator.generatePoints();
-            writeApi.writePoints("online-store", influxDbConfig.getOrg(), points);
+            writeApi.writePoints(points);
         }
     }
 
-    public List<FluxRecord> findAll() {
+    public List<List<FluxRecord>> findAll() {
         String flux = "from(bucket:\"online-store\") |> range(start: 0)";
 
         QueryApi queryApi = influxDBClient.getQueryApi();
 
-        List<FluxTable> tables = queryApi.query(flux, influxDbConfig.getOrg());
+        List<FluxTable> tables = queryApi.query(flux);
+        List<List<FluxRecord>> recordsList = Lists.newArrayList();
         for (FluxTable fluxTable : tables) {
             List<FluxRecord> records = fluxTable.getRecords();
             for (FluxRecord fluxRecord : records) {
                 System.out.println(fluxRecord.getTime() + ": " + fluxRecord.getValueByKey("_value"));
             }
-            return records;
+            recordsList.add(records);
         }
-        return null;
+        return recordsList;
     }
 }

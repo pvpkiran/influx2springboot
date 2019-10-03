@@ -23,6 +23,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.influxdb</groupId>
+            <artifactId>influxdb-spring</artifactId>
+            <version>1.0.0</version>
+        </dependency>
             <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
