@@ -18,7 +18,7 @@ public class WebController {
         this.influxService = influxService;
     }
 
-    @GetMapping("/initialize")
+    @GetMapping("/load")
     public void initialize(){
         influxService.writeDataToInflux();
     }
