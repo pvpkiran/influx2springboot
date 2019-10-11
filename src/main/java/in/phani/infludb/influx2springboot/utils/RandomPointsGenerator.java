@@ -156,7 +156,7 @@ public class RandomPointsGenerator {
                 int unitRandomIndex = unitRandom.nextInt(units.size());
                 ChronoUnit unit = units.get(unitRandomIndex);
 
-                Instant instant = Instant.now().minus(brandInt, unit);
+                Instant instant = Instant.now()/*.minus(brandInt, unit)*/;
 
                 double price = priceRandom.nextInt(100000);
                 String brand = "brand-"+ brandInt;
